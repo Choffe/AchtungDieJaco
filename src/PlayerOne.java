@@ -3,6 +3,7 @@ public class PlayerOne {
 	private int xCoord;
 	private int yCoord;
 	private int direction;
+	private double random;
 	
 	public static int LEFT = -1;
 	public static int RIGHT = 1;
@@ -17,6 +18,15 @@ public class PlayerOne {
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 		this.direction = 1;
+		this.random = 0.97;
+	}
+
+	public double getRandom() {
+		return random;
+	}
+
+	public void setRandom(double random) {
+		this.random = random;
 	}
 
 	public int getxCoord() {

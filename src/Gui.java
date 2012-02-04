@@ -24,6 +24,7 @@ public class Gui extends JPanel implements ActionListener {
 	private int x[] = new int[1000];
 	private int y[] = new int[1000];
 	PlayerOne playerOne;
+	PlayerOne playerTwo;
 	private Image ball;
 	private int moves;
 
@@ -45,6 +46,7 @@ public class Gui extends JPanel implements ActionListener {
 		moves = 0;
 
 		playerOne = new PlayerOne(10, 10);
+		playerTwo = new PlayerOne(50, 20);
 		x[moves] = playerOne.getxCoord();
 		y[moves] = playerOne.getyCoord();
 
@@ -54,11 +56,23 @@ public class Gui extends JPanel implements ActionListener {
 	}
 
 	private void move() {
-		moves++;
-		playerOne.move();
-		x[moves] = playerOne.getxCoord();
-		y[moves] = playerOne.getyCoord();
 
+		playerOne.move();
+		if (Math.random() < playerOne.getRandom()) {
+			moves++;
+			x[moves] = playerOne.getxCoord();
+			y[moves] = playerOne.getyCoord();
+			checkCollision(playerOne.getxCoord(),playerOne.getyCoord() );
+		}
+		
+		playerTwo.move();
+		if (Math.random() < playerTwo.getRandom()) {
+			moves++;
+			x[moves] = playerTwo.getxCoord();
+			y[moves] = playerTwo.getyCoord();
+			checkCollision(playerTwo.getxCoord(),playerTwo.getyCoord() );
+		}
+		
 	}
 
 	@Override
@@ -66,16 +80,13 @@ public class Gui extends JPanel implements ActionListener {
 
 		if (!dead) {
 			move();
-			checkCollision();
+
 		}
 		repaint();
 
 	}
 
-	private void checkCollision() {
-
-		int pX = playerOne.getxCoord();
-		int pY = playerOne.getyCoord();
+	private void checkCollision(int pX, int pY) {
 
 		for (int z = 0; z < moves - 1; z++) {
 
@@ -125,6 +136,7 @@ public class Gui extends JPanel implements ActionListener {
 		g.setFont(small);
 		g.drawString(msg, (WIDTH - metr.stringWidth(msg)) / 2, HEIGHT / 2);
 	}
+	
 
 	private class TAdapter extends KeyAdapter {
 
@@ -132,6 +144,34 @@ public class Gui extends JPanel implements ActionListener {
 
 			int key = e.getKeyCode();
 
+			playerOneMove(key);
+			playerTwoMove(key);
+			
+		}
+
+		private void playerTwoMove(int key) {
+			if ((key == KeyEvent.VK_A)
+					&& (playerTwo.getDirection() != PlayerOne.RIGHT)) {
+				playerTwo.setDirection(PlayerOne.LEFT);
+			}
+
+			if ((key == KeyEvent.VK_D)
+					&& (playerTwo.getDirection() != PlayerOne.LEFT)) {
+				playerTwo.setDirection(PlayerOne.RIGHT);
+			}
+
+			if ((key == KeyEvent.VK_W)
+					&& ((playerTwo.getDirection() != PlayerOne.DOWN))) {
+				playerTwo.setDirection(PlayerOne.UP);
+			}
+
+			if ((key == KeyEvent.VK_S)
+					&& (playerTwo.getDirection() != PlayerOne.UP)) {
+				playerTwo.setDirection(PlayerOne.DOWN);
+			}				
+		}
+
+		private void playerOneMove(int key) {
 			if ((key == KeyEvent.VK_LEFT)
 					&& (playerOne.getDirection() != PlayerOne.RIGHT)) {
 				playerOne.setDirection(PlayerOne.LEFT);
@@ -150,7 +190,7 @@ public class Gui extends JPanel implements ActionListener {
 			if ((key == KeyEvent.VK_DOWN)
 					&& (playerOne.getDirection() != PlayerOne.UP)) {
 				playerOne.setDirection(PlayerOne.DOWN);
-			}
+			}			
 		}
 	}
 
