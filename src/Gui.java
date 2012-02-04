@@ -10,8 +10,8 @@ public class Gui extends JPanel implements ActionListener{
 
 	private final int refreshRate = 140;
 	public Gui (){
-		setBackground(Color.black);
-		
+		this.setBackground(Color.black);
+		this.setVisible(true);
 		initGame();
 	}
 	
@@ -22,7 +22,8 @@ public class Gui extends JPanel implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		setBackground(Color.blue);
+		this.setBackground(Color.blue);
+		this.repaint();
 		
 	}
 	
