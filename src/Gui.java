@@ -15,10 +15,11 @@ public class Gui extends JPanel implements ActionListener {
 	private final int refreshRate = 140;
 
 	private boolean dead;
-	private int x[] = new int[100];
-	private int y[] = new int[70];
+	private int x[] = new int[1000];
+	private int y[] = new int[1000];
 	PlayerOne playerOne;
 	private Image ball;
+	private int moves;
 
 	public Gui() {
 		this.setBackground(Color.black);
@@ -26,23 +27,28 @@ public class Gui extends JPanel implements ActionListener {
 		ImageIcon iid = new ImageIcon(this.getClass().getResource("dot.png"));
 		ball = iid.getImage();
 
-		playerOne = new PlayerOne(200, 200);
+		playerOne = new PlayerOne(10, 10);
 
 		setFocusable(true);
-
+		
 		initGame();
 	}
 
 	public void initGame() {
 		dead = false;
-
+		moves = 0;
 		Timer timer = new Timer(refreshRate, this);
 		timer.start();
 
 	}
 
 	private void move() {
+		moves++;
 		playerOne.move();
+		x[moves]=playerOne.getxCoord();
+		y[moves]=playerOne.getyCoord();
+	
+		
 	}
 
 	@Override
@@ -58,15 +64,15 @@ public class Gui extends JPanel implements ActionListener {
 		super.paint(g);
 
 		if (!dead) {
-			int[] p1x = playerOne.getxCoord();
-			int[] p1y = playerOne.getyCoord();
+			
 
-			for (int z = 0; z < p1x.length; z++) {
-				g.drawImage(ball, p1x[z], p1y[z], this);
+			for (int z = 0; z < moves; z++) {
+				g.drawImage(ball, x[z], y[z], this);
 
-				Toolkit.getDefaultToolkit().sync();
-				g.dispose();
+				
 			}
+			Toolkit.getDefaultToolkit().sync();
+			g.dispose();
 		}
 	}
 

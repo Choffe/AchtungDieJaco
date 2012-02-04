@@ -6,7 +6,7 @@ public class Main extends JFrame{
 	public Main(){
 		add(new Gui());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(100,700);
+		setSize(1000,700);
 		setTitle("Achtung Die Jaco");
 		
 		setVisible(true);
