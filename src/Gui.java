@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -23,11 +24,12 @@ public class Gui extends JPanel implements ActionListener {
 	private boolean dead;
 	private int x[] = new int[1000];
 	private int y[] = new int[1000];
-	PlayerOne playerOne;
-	PlayerOne playerTwo;
+	Player playerOne;
+	Player playerTwo;
 	private Image ball;
 	private int moves;
-
+	private JButton btnRestart;
+	
 	public Gui() {
 		this.setBackground(Color.black);
 
@@ -37,7 +39,19 @@ public class Gui extends JPanel implements ActionListener {
 		ball = iid.getImage();
 
 		setFocusable(true);
-
+		
+		btnRestart = new JButton("Restart");
+		btnRestart.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				restartGame();
+				
+			}
+		});
+		
+		btnRestart.setVisible(false);
+		
 		initGame();
 	}
 
@@ -45,14 +59,25 @@ public class Gui extends JPanel implements ActionListener {
 		dead = false;
 		moves = 0;
 
-		playerOne = new PlayerOne(10, 10);
-		playerTwo = new PlayerOne(50, 20);
+		playerOne = new Player(10, 10);
+		playerTwo = new Player(50, 20);
 		x[moves] = playerOne.getxCoord();
 		y[moves] = playerOne.getyCoord();
 
 		Timer timer = new Timer(refreshRate, this);
 		timer.start();
 
+	}
+	
+	private void restartGame(){
+		for(int a : x)
+			a = -10;
+		
+		for(int a : y)
+			a = -10;
+		
+		
+		initGame();
 	}
 
 	private void move() {
@@ -90,7 +115,9 @@ public class Gui extends JPanel implements ActionListener {
 
 		for (int z = 0; z < moves - 1; z++) {
 
-			if (x[z] == pX && y[z] == pY) {
+			int fakesize = 4;
+			if ((x[z] > pX -fakesize  && x[z] < pX + fakesize) 
+					&& (y[z] > pY - fakesize && y[z] < pY + fakesize)) {
 				dead = true;
 			}
 		}
@@ -150,47 +177,24 @@ public class Gui extends JPanel implements ActionListener {
 		}
 
 		private void playerTwoMove(int key) {
-			if ((key == KeyEvent.VK_A)
-					&& (playerTwo.getDirection() != PlayerOne.RIGHT)) {
-				playerTwo.setDirection(PlayerOne.LEFT);
+			if (key == KeyEvent.VK_Z){
+				playerTwo.setDirection(-0.1);
 			}
 
-			if ((key == KeyEvent.VK_D)
-					&& (playerTwo.getDirection() != PlayerOne.LEFT)) {
-				playerTwo.setDirection(PlayerOne.RIGHT);
+			if (key == KeyEvent.VK_X){
+				playerTwo.setDirection(0.1);
 			}
 
-			if ((key == KeyEvent.VK_W)
-					&& ((playerTwo.getDirection() != PlayerOne.DOWN))) {
-				playerTwo.setDirection(PlayerOne.UP);
-			}
-
-			if ((key == KeyEvent.VK_S)
-					&& (playerTwo.getDirection() != PlayerOne.UP)) {
-				playerTwo.setDirection(PlayerOne.DOWN);
-			}				
 		}
 
 		private void playerOneMove(int key) {
-			if ((key == KeyEvent.VK_LEFT)
-					&& (playerOne.getDirection() != PlayerOne.RIGHT)) {
-				playerOne.setDirection(PlayerOne.LEFT);
+			if (key == KeyEvent.VK_COMMA){
+				playerOne.setDirection(-0.1);
 			}
 
-			if ((key == KeyEvent.VK_RIGHT)
-					&& (playerOne.getDirection() != PlayerOne.LEFT)) {
-				playerOne.setDirection(PlayerOne.RIGHT);
+			if (key == KeyEvent.VK_PERIOD){
+				playerOne.setDirection(0.1);
 			}
-
-			if ((key == KeyEvent.VK_UP)
-					&& ((playerOne.getDirection() != PlayerOne.DOWN))) {
-				playerOne.setDirection(PlayerOne.UP);
-			}
-
-			if ((key == KeyEvent.VK_DOWN)
-					&& (playerOne.getDirection() != PlayerOne.UP)) {
-				playerOne.setDirection(PlayerOne.DOWN);
-			}			
 		}
 	}
 
