@@ -14,6 +14,15 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+//TODO Fixa så att båda kan svänga samtidigt!
+//TODO Fixa collision controll tillsammans med att eventuellt
+// måste fixa om plan matrisen. Ska den verkligen vara så här?
+// Borde ha en matris Board som har lika många platser som 
+// pixlar. Noll = obesökt, 1 = Besökt = Krash.
+
+//TODO Fixa så att det inte är sådanna hära bollar som printas
+//TODO Fixa dubbel buffer painting
+
 public class Gui extends JPanel implements ActionListener {
 
 	private final int dotSize = 10;
@@ -29,6 +38,7 @@ public class Gui extends JPanel implements ActionListener {
 	private Image ball;
 	private int moves;
 	private JButton btnRestart;
+	private Timer timer;
 	
 	public Gui() {
 		this.setBackground(Color.black);
@@ -51,6 +61,7 @@ public class Gui extends JPanel implements ActionListener {
 		});
 		
 		btnRestart.setVisible(false);
+		this.add(btnRestart);
 		
 		initGame();
 	}
@@ -64,7 +75,7 @@ public class Gui extends JPanel implements ActionListener {
 		x[moves] = playerOne.getxCoord();
 		y[moves] = playerOne.getyCoord();
 
-		Timer timer = new Timer(refreshRate, this);
+		timer = new Timer(refreshRate, this);
 		timer.start();
 
 	}
@@ -76,7 +87,8 @@ public class Gui extends JPanel implements ActionListener {
 		for(int a : y)
 			a = -10;
 		
-		
+		btnRestart.setVisible(false);
+		timer.stop();
 		initGame();
 	}
 
@@ -115,9 +127,8 @@ public class Gui extends JPanel implements ActionListener {
 
 		for (int z = 0; z < moves - 1; z++) {
 
-			int fakesize = 4;
-			if ((x[z] > pX -fakesize  && x[z] < pX + fakesize) 
-					&& (y[z] > pY - fakesize && y[z] < pY + fakesize)) {
+			if (Math.hypot(Math.abs(pX - x[z]), Math.abs(pY - y[z]))
+					< 1){
 				dead = true;
 			}
 		}
@@ -150,6 +161,7 @@ public class Gui extends JPanel implements ActionListener {
 			Toolkit.getDefaultToolkit().sync();
 			g.dispose();
 		} else
+			
 			gameOver(g);
 
 	}
@@ -162,6 +174,9 @@ public class Gui extends JPanel implements ActionListener {
 		g.setColor(Color.white);
 		g.setFont(small);
 		g.drawString(msg, (WIDTH - metr.stringWidth(msg)) / 2, HEIGHT / 2);
+		
+		btnRestart.setVisible(true);
+		
 	}
 	
 
