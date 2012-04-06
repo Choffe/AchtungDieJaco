@@ -23,16 +23,17 @@ import javax.swing.Timer;
 //TODO Fixa så att det inte är sådanna hära bollar som printas
 //TODO Fixa dubbel buffer painting
 
+//TODO Fixa kanterna igen
+//TODO Fixa  hur lång steglängde ska vara. runda upp? diagonalen är en krash.
+
 public class Gui extends JPanel implements ActionListener {
 
-	private final int dotSize = 10;
 	private final int HEIGHT = 700;
 	private final int WIDTH = 1000;
 	private final int refreshRate = 140;
 
 	private boolean dead;
-	private int x[] = new int[1000];
-	private int y[] = new int[1000];
+	private int board[][] = new int[1000][1000];
 	Player playerOne;
 	Player playerTwo;
 	private Image ball;
@@ -45,7 +46,7 @@ public class Gui extends JPanel implements ActionListener {
 
 		addKeyListener(new TAdapter());
 
-		ImageIcon iid = new ImageIcon(this.getClass().getResource("dot.png"));
+		ImageIcon iid = new ImageIcon(this.getClass().getResource("smalldot.png"));
 		ball = iid.getImage();
 
 		setFocusable(true);
@@ -72,8 +73,6 @@ public class Gui extends JPanel implements ActionListener {
 
 		playerOne = new Player(10, 10);
 		playerTwo = new Player(50, 20);
-		x[moves] = playerOne.getxCoord();
-		y[moves] = playerOne.getyCoord();
 
 		timer = new Timer(refreshRate, this);
 		timer.start();
@@ -81,11 +80,9 @@ public class Gui extends JPanel implements ActionListener {
 	}
 	
 	private void restartGame(){
-		for(int a : x)
-			a = -10;
-		
-		for(int a : y)
-			a = -10;
+		for(int[] i : board)
+			for(int j : i)
+				j = 0;
 		
 		btnRestart.setVisible(false);
 		timer.stop();
@@ -96,18 +93,18 @@ public class Gui extends JPanel implements ActionListener {
 
 		playerOne.move();
 		if (Math.random() < playerOne.getRandom()) {
-			moves++;
-			x[moves] = playerOne.getxCoord();
-			y[moves] = playerOne.getyCoord();
-			checkCollision(playerOne.getxCoord(),playerOne.getyCoord() );
+			if(board[playerOne.getxCoord()][playerOne.getyCoord()] == 0)
+				board[playerOne.getxCoord()][playerOne.getyCoord()] =1;
+			else 
+				dead = true;
 		}
 		
 		playerTwo.move();
 		if (Math.random() < playerTwo.getRandom()) {
-			moves++;
-			x[moves] = playerTwo.getxCoord();
-			y[moves] = playerTwo.getyCoord();
-			checkCollision(playerTwo.getxCoord(),playerTwo.getyCoord() );
+			if(board[playerTwo.getxCoord()][playerTwo.getyCoord()] == 0)
+				board[playerTwo.getxCoord()][playerTwo.getyCoord()] =2;
+			else 
+				dead = true;
 		}
 		
 	}
@@ -123,40 +120,23 @@ public class Gui extends JPanel implements ActionListener {
 
 	}
 
-	private void checkCollision(int pX, int pY) {
 
-		for (int z = 0; z < moves - 1; z++) {
-
-			if (Math.hypot(Math.abs(pX - x[z]), Math.abs(pY - y[z]))
-					< 1){
-				dead = true;
-			}
-		}
-
-		if (pY > HEIGHT) {
-			dead = true;
-		}
-
-		if (pY < 0) {
-			dead = true;
-		}
-
-		if (pX > WIDTH) {
-			dead = true;
-		}
-
-		if (pX < 0) {
-			dead = true;
-		}
-	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
 
 		if (!dead) {
-			for (int z = 0; z < moves; z++) {
-				g.drawImage(ball, x[z], y[z], this);
-
+			for (int i = 0; i < 1000; i++) {
+				for(int j = 0; j < 1000; j++){
+					switch (board[i][j]) {
+						case 1 :
+							g.drawImage(ball, i, j, this);
+							break;
+						case 2 :
+							g.drawImage(ball, i, j, this);
+							break;
+					}
+				}
 			}
 			Toolkit.getDefaultToolkit().sync();
 			g.dispose();
