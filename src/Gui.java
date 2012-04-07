@@ -15,15 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 //TODO Fixa så att båda kan svänga samtidigt!
-//TODO Fixa collision controll tillsammans med att eventuellt
-// måste fixa om plan matrisen. Ska den verkligen vara så här?
-// Borde ha en matris Board som har lika många platser som 
-// pixlar. Noll = obesökt, 1 = Besökt = Krash.
 
 //TODO Fixa så att det inte är sådanna hära bollar som printas
 //TODO Fixa dubbel buffer painting
 
-//TODO Fixa kanterna igen
+//TODO Fixa styrningen igen
 //TODO Fixa  hur lång steglängde ska vara. runda upp? diagonalen är en krash.
 
 public class Gui extends JPanel implements ActionListener {
@@ -80,9 +76,9 @@ public class Gui extends JPanel implements ActionListener {
 	}
 	
 	private void restartGame(){
-		for(int[] i : board)
-			for(int j : i)
-				j = 0;
+		for(int i = 0; i < HEIGHT; i++)
+			for(int j = 0; j < WIDTH; j++)
+				board[i][j] = 0;
 		
 		btnRestart.setVisible(false);
 		timer.stop();
@@ -93,20 +89,34 @@ public class Gui extends JPanel implements ActionListener {
 
 		playerOne.move();
 		if (Math.random() < playerOne.getRandom()) {
-			if(board[playerOne.getxCoord()][playerOne.getyCoord()] == 0)
+			if(checkCollision(playerOne.getxCoord(), playerOne.getyCoord()))
 				board[playerOne.getxCoord()][playerOne.getyCoord()] =1;
-			else 
-				dead = true;
 		}
 		
 		playerTwo.move();
 		if (Math.random() < playerTwo.getRandom()) {
-			if(board[playerTwo.getxCoord()][playerTwo.getyCoord()] == 0)
+			if(checkCollision(playerTwo.getxCoord(), playerTwo.getyCoord()))
 				board[playerTwo.getxCoord()][playerTwo.getyCoord()] =2;
-			else 
-				dead = true;
 		}
 		
+
+
+	}
+
+	private boolean checkCollision(int xCoord, int yCoord) {
+		if(xCoord <= 0 || xCoord >= this.WIDTH){
+			dead = true;
+			return false;
+		}
+		if(yCoord <= 0 || yCoord >= this.HEIGHT){
+			dead = true;
+			return false;
+		}
+		if(board[xCoord][yCoord] != 0){
+			dead = true;
+			return false;
+		}
+		return true;
 	}
 
 	@Override
