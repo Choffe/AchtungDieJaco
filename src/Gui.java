@@ -26,7 +26,7 @@ public class Gui extends JPanel implements ActionListener {
 
 	private final int HEIGHT = 700;
 	private final int WIDTH = 1000;
-	private final int refreshRate = 140;
+	private final int refreshRate = 100;
 
 	private boolean dead;
 	private int board[][] = new int[1000][1000];
