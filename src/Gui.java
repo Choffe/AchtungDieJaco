@@ -18,15 +18,13 @@ public class Gui extends JPanel implements ActionListener {
 	private final int dotSize = 10;
 	private final int HEIGHT = 700;
 	private final int WIDTH = 1000;
-	private final int refreshRate = 140;
+	private final int refreshRate = 150;
 
 	private boolean dead;
-	private int x[] = new int[1000];
-	private int y[] = new int[1000];
+	private int board[][] = new int[1000][1000];
 	PlayerOne playerOne;
 	PlayerOne playerTwo;
 	private Image ball;
-	private int moves;
 
 	public Gui() {
 		this.setBackground(Color.black);
@@ -43,12 +41,9 @@ public class Gui extends JPanel implements ActionListener {
 
 	public void initGame() {
 		dead = false;
-		moves = 0;
 
 		playerOne = new PlayerOne(10, 10);
 		playerTwo = new PlayerOne(50, 20);
-		x[moves] = playerOne.getxCoord();
-		y[moves] = playerOne.getyCoord();
 
 		Timer timer = new Timer(refreshRate, this);
 		timer.start();
@@ -58,20 +53,18 @@ public class Gui extends JPanel implements ActionListener {
 	private void move() {
 
 		playerOne.move();
-		if (Math.random() < playerOne.getRandom()) {
-			moves++;
-			x[moves] = playerOne.getxCoord();
-			y[moves] = playerOne.getyCoord();
-			checkCollision(playerOne.getxCoord(),playerOne.getyCoord() );
-		}
+//		(Math.random() < playerOne.getRandom()) {
+			if(checkCollision(playerOne.getxCoord(),playerOne.getyCoord()))
+				board[playerOne.getyCoord()][playerOne.getxCoord()] = 1;
+//		}
 		
-		playerTwo.move();
-		if (Math.random() < playerTwo.getRandom()) {
-			moves++;
-			x[moves] = playerTwo.getxCoord();
-			y[moves] = playerTwo.getyCoord();
-			checkCollision(playerTwo.getxCoord(),playerTwo.getyCoord() );
-		}
+//		playerTwo.move();
+//		if (Math.random() < playerTwo.getRandom()) {
+//			moves++;
+//			x[moves] = playerTwo.getxCoord();
+//			y[moves] = playerTwo.getyCoord();
+//			checkCollision(playerTwo.getxCoord(),playerTwo.getyCoord() );
+//		}
 		
 	}
 
@@ -86,38 +79,46 @@ public class Gui extends JPanel implements ActionListener {
 
 	}
 
-	private void checkCollision(int pX, int pY) {
+	private boolean checkCollision(int pX, int pY) {
 
-		for (int z = 0; z < moves - 1; z++) {
-
-			if (x[z] == pX && y[z] == pY) {
+		for (int i = 0; i < this.HEIGHT; i++) {
+			for(int j = 0; j < this.WIDTH; j++){
+			if (board[pY][pX] != 0) {
 				dead = true;
-			}
+				return false;
+			}}
 		}
 
 		if (pY > HEIGHT) {
 			dead = true;
+			return false;
 		}
 
 		if (pY < 0) {
 			dead = true;
+			return false;
 		}
 
 		if (pX > WIDTH) {
 			dead = true;
+			return false;
 		}
 
 		if (pX < 0) {
 			dead = true;
+			return false;
 		}
+		return true;
 	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
 
 		if (!dead) {
-			for (int z = 0; z < moves; z++) {
-				g.drawImage(ball, x[z], y[z], this);
+			for(int i = 0; i < HEIGHT; i++)
+				for(int j = 0; j < WIDTH; j++){
+					if(board[i][j] != 0)
+						g.drawImage(ball, i, j, this);
 
 			}
 			Toolkit.getDefaultToolkit().sync();
