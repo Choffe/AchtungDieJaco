@@ -21,14 +21,14 @@ public class Gui extends JPanel implements ActionListener {
 	private final int refreshRate = 150;
 
 	private boolean dead;
-	private int board[][] = new int[1000][1000];
+	private int board[][] = new int[HEIGHT][WIDTH];
 	PlayerOne playerOne;
 	PlayerOne playerTwo;
 	private Image ball;
 
 	public Gui() {
-		this.setBackground(Color.black);
-
+		this.setBackground(Color.white);
+//TODO		this.setDoubleBuffered(true);
 		addKeyListener(new TAdapter());
 
 		ImageIcon iid = new ImageIcon(this.getClass().getResource("dot.png"));
@@ -42,8 +42,8 @@ public class Gui extends JPanel implements ActionListener {
 	public void initGame() {
 		dead = false;
 
-		playerOne = new PlayerOne(10, 10);
-		playerTwo = new PlayerOne(50, 20);
+		playerOne = new PlayerOne(15, 15);
+		playerTwo = new PlayerOne(55, 25);
 
 		Timer timer = new Timer(refreshRate, this);
 		timer.start();
@@ -70,35 +70,21 @@ public class Gui extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-
 		if (!dead) {
 			move();
-
 		}
 		repaint();
-
 	}
 
 	private boolean checkCollision(int pX, int pY) {
-
-		for (int i = 0; i < this.HEIGHT; i++) {
-			for(int j = 0; j < this.WIDTH; j++){
-			if (board[pY][pX] != 0) {
-				dead = true;
-				return false;
-			}}
-		}
-
 		if (pY > HEIGHT) {
 			dead = true;
 			return false;
 		}
-
 		if (pY < 0) {
 			dead = true;
 			return false;
 		}
-
 		if (pX > WIDTH) {
 			dead = true;
 			return false;
@@ -108,18 +94,35 @@ public class Gui extends JPanel implements ActionListener {
 			dead = true;
 			return false;
 		}
+		
+		for (int i = 0; i < this.HEIGHT; i++) {
+			for(int j = 0; j < this.WIDTH; j++){
+			if (board[pY][pX] != 0) {
+				dead = true;
+				return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
-
+		g.setColor(Color.blue);
+		g.drawRect(0, 0, WIDTH, HEIGHT);
+		
 		if (!dead) {
-			for(int i = 0; i < HEIGHT; i++)
+			for(int i = 0; i < HEIGHT; i++){
+				g.setColor(Color.gray);
+				if(i % 10 == 0)
+					g.drawLine(0, i, WIDTH, i);
 				for(int j = 0; j < WIDTH; j++){
 					if(board[i][j] != 0)
-						g.drawImage(ball, i, j, this);
-
+						g.drawImage(ball, j, i, this);
+					if(j % 10 == 0)
+						g.drawLine(j, 0, j, HEIGHT);
+				}
 			}
 			Toolkit.getDefaultToolkit().sync();
 			g.dispose();
