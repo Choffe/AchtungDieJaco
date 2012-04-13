@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
 public class Gui extends JPanel implements ActionListener {
 
 	private final int dotSize = 10;
