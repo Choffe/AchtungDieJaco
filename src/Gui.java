@@ -24,8 +24,10 @@ public class Gui extends JFrame implements ActionListener {
 	private int board[][] = new int[HEIGHT][WIDTH];
 	PlayerOne playerOne;
 	PlayerOne playerTwo;
-	private Image ball;
+	private Image car;
+	private Image carStop;
 	private Image tracks;
+	private Image gearbox;
 
 	public static void main(String[] args) {
 		new Gui();
@@ -45,10 +47,18 @@ public class Gui extends JFrame implements ActionListener {
 
 		ImageIcon iid = new ImageIcon(this.getClass().getResource(
 				"car9.gif"));
-		ball = iid.getImage();
+		car = iid.getImage();
 		iid = new ImageIcon(this.getClass().getResource(
 				"car10.gif"));
 		tracks = iid.getImage();
+		iid = new ImageIcon(this.getClass().getResource(
+				"car11.gif"));
+		carStop = iid.getImage();
+
+		iid = new ImageIcon(this.getClass().getResource(
+				"gearbox.gif"));
+		gearbox = iid.getImage();
+		
 		setFocusable(true);
 
 		initGame();
@@ -72,7 +82,7 @@ public class Gui extends JFrame implements ActionListener {
 		
 		if (checkCollision(playerOne.getxCoord(), playerOne.getyCoord())){
 						board[playerOne.getyCoord()][playerOne.getxCoord()] = 1;
-						
+						board[playerOne.getOldYCoord()][playerOne.getOldXCoord()] = 11;
 						int minX = Math.min(playerOne.getxCoord(), playerOne.getOldXCoord());
 						int minY = Math.min(playerOne.getyCoord(), playerOne.getOldYCoord());
 						
@@ -148,10 +158,12 @@ public class Gui extends JFrame implements ActionListener {
 	public void draw() {
 		Graphics g = null;
 		BufferStrategy bf = this.getBufferStrategy();
-
+		
 		try {
 			g = bf.getDrawGraphics();
+			
 			if (!dead) {
+				displayGear(g, playerOne.getSpeed());
 				for (int i = 0; i < HEIGHT; i++) {
 					g.setColor(Color.gray);
 					g.drawLine(0, i*10, WIDTH*10, i*10);
@@ -160,9 +172,12 @@ public class Gui extends JFrame implements ActionListener {
 							g.drawLine(j*10, 0, j*10, HEIGHT*10);
 						}
 						if (board[i][j] == 1)
-							g.drawImage(ball, j*10, i*10, this);
+							g.drawImage(car, j*10-8, i*10-5, this);
 						else if( board[i][j] == 10)
-							g.drawImage(tracks, j*10, i*10, this);
+							g.drawImage(tracks, j*10-4, i*10-3, this);
+						else if( board[i][j] == 11)
+							g.drawImage(carStop, j*10-8, i*10-5, this);
+						
 					}
 				}
 			} else
@@ -180,9 +195,28 @@ public class Gui extends JFrame implements ActionListener {
 		Font small = new Font("Helvetica", Font.BOLD, 14);
 		FontMetrics metr = this.getFontMetrics(small);
 
-		g.setColor(Color.white);
+		g.setColor(Color.black);
 		g.setFont(small);
-		g.drawString(msg, (WIDTH - metr.stringWidth(msg)) / 2, HEIGHT / 2);
+		g.drawString(msg, (WIDTH*10 - metr.stringWidth(msg)) / 2, HEIGHT*10 / 2);
+	}
+	
+	public void displayGear(Graphics g, int gear){
+		
+		
+		String msg = ""+gear;
+		Font small = new Font("Helvetica", Font.BOLD, 30);
+		FontMetrics metr = this.getFontMetrics(small);
+		
+		g.setColor(new Color(244,244,244));
+		g.fillRect((WIDTH*10 - 130), 5, 130, 50);
+		
+		g.setColor(Color.black);
+		g.setFont(small);
+		g.drawString(msg, (WIDTH*10 - metr.stringWidth(msg)-10) , 40);
+		
+		
+		
+		g.drawImage(gearbox, WIDTH*10 - gearbox.getWidth(this) - metr.stringWidth(msg)-20, 10, this);
 	}
 
 	private class TAdapter extends KeyAdapter {

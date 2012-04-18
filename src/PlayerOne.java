@@ -10,6 +10,10 @@ public class PlayerOne {
 	public static int RIGHT = 1;
 	public static int UP = -2;
 	public static int DOWN = 2;
+	public static int UPLEFT = -3;
+	public static int UPRIGHT = 3;
+	public static int DOWNLEFT = -4;
+	public static int DOWNRIGHT = 4;
 	
 	
 
@@ -77,13 +81,29 @@ public class PlayerOne {
 		case -2 :
 				yCoord-=speed;
 				break;
+		case -3 :
+				xCoord-=speed;
+				yCoord-=speed;
+				break;
+		case 3 :
+				xCoord+=speed;
+				yCoord-=speed;
+				break;
+				
+		case -4 :
+				xCoord-=speed;
+				yCoord+=speed;
+				break;
+		case 4 :
+				xCoord+=speed;
+				yCoord+=speed;
+				break;
+			
 		}
 		
 		
 		
 	}
-
-
 
 
 	public int getSpeed() {
