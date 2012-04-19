@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -60,7 +61,7 @@ public class Gui extends JFrame implements ActionListener {
 		gearbox = iid.getImage();
 		
 		setFocusable(true);
-
+		
 		initGame();
 	}
 
@@ -253,25 +254,21 @@ public class Gui extends JFrame implements ActionListener {
 		}
 
 		private void playerOneMove(int key) {
-			if ((key == KeyEvent.VK_LEFT)
-					&& (playerOne.getDirection() != PlayerOne.RIGHT)) {
+			if (key == KeyEvent.VK_LEFT) {
 				playerOne.setDirection(PlayerOne.LEFT);
 			}
 
-			if ((key == KeyEvent.VK_RIGHT)
-					&& (playerOne.getDirection() != PlayerOne.LEFT)) {
+			if (key == KeyEvent.VK_RIGHT){
 				playerOne.setDirection(PlayerOne.RIGHT);
 			}
 
-			if ((key == KeyEvent.VK_UP)
-					&& ((playerOne.getDirection() != PlayerOne.DOWN))) {
-				playerOne.setDirection(PlayerOne.UP);
-			}
-
-			if ((key == KeyEvent.VK_DOWN)
-					&& (playerOne.getDirection() != PlayerOne.UP)) {
-				playerOne.setDirection(PlayerOne.DOWN);
-			}
+//			if (key == KeyEvent.VK_UP){
+//				playerOne.setDirection(PlayerOne.UP);
+//			}
+//
+//			if (key == KeyEvent.VK_DOWN){
+//				playerOne.setDirection(PlayerOne.DOWN);
+//			}
 			if (key == KeyEvent.VK_SPACE){
 				if (!dead) {
 					move();
