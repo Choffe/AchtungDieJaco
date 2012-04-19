@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -29,6 +33,9 @@ public class Gui extends JFrame implements ActionListener {
 	private Image carStop;
 	private Image tracks;
 	private Image gearbox;
+	private Image direction;
+	private Image wall;
+	
 
 	public static void main(String[] args) {
 		new Gui();
@@ -59,6 +66,13 @@ public class Gui extends JFrame implements ActionListener {
 		iid = new ImageIcon(this.getClass().getResource(
 				"gearbox.gif"));
 		gearbox = iid.getImage();
+
+		iid = new ImageIcon(this.getClass().getResource(
+				"down.gif"));
+		direction = iid.getImage();
+		iid = new ImageIcon(this.getClass().getResource(
+				"wall.png"));
+		wall = iid.getImage();
 		
 		setFocusable(true);
 		
@@ -68,13 +82,35 @@ public class Gui extends JFrame implements ActionListener {
 	public void initGame() {
 		dead = false;
 
-		playerOne = new PlayerOne(15, 15);
+		playerOne = new PlayerOne(15, 25);
 		playerTwo = new PlayerOne(55, 25);
-
+		generateBoard();
 		Timer timer = new Timer(refreshRate, this);
 		timer.start();
 
 	}
+
+	private void generateBoard() {
+			  String line = "";
+			  int j = 0;
+			  try {
+			   FileReader fr = new FileReader("map.data");
+			   BufferedReader br = new BufferedReader(fr);//Can also use a Scanner to read the file
+			   while((line = br.readLine()) != null) {
+			    String[] theline = line.split(" ");
+			    for(int i=0; i < WIDTH; i++)
+			    	board[j][i]=(Integer.valueOf(theline[i]));
+			    j++;
+			   }
+			  }
+			  catch(FileNotFoundException fN) {
+			   fN.printStackTrace();
+			  }
+			  catch(IOException e) {
+			   System.out.println(e);
+			  }
+		}		
+	
 
 	private void move() {
 
@@ -86,8 +122,6 @@ public class Gui extends JFrame implements ActionListener {
 						board[playerOne.getOldYCoord()][playerOne.getOldXCoord()] = 11;
 						int minX = Math.min(playerOne.getxCoord(), playerOne.getOldXCoord());
 						int minY = Math.min(playerOne.getyCoord(), playerOne.getOldYCoord());
-						int maxX = Math.max(playerOne.getxCoord(), playerOne.getOldXCoord());
-						int maxY = Math.max(playerOne.getyCoord(), playerOne.getOldYCoord());
 						//TODO fixa svängarna med dx och dy i signs
 						
 						double dx = Math.abs(playerOne.getxCoord() - playerOne.getOldXCoord());
@@ -102,13 +136,21 @@ public class Gui extends JFrame implements ActionListener {
 							kX = 1;
 							kY = 0;
 						}
-						else{
+					
+						else if((minY == playerOne.getOldYCoord() && minX == playerOne.getOldXCoord()) ||
+								(minY != playerOne.getOldYCoord() && minX != playerOne.getOldXCoord())){
 							kX = 1;
 							kY = 1;
 						}
+						//FIXME WARNING!!!! FARLIGT FÖR PÅ BYGGNAD MIN BLIR MAX!!! HACK!!  
+						else  {
+							minY = Math.max(playerOne.getyCoord(), playerOne.getOldYCoord());;
+							kX = 1;
+							kY = -1;
+						}
 						for(int i= 1; i < playerOne.getSpeed(); i++){
+							checkCollision(minX + kX*i, minY+kY*i);
 							board[minY+kY*i][minX + kX*i] = 10;
-							System.out.println("x: "+( minX+ kX*i) + " y: " + (minY+kY*i));
 						}
 		}
 
@@ -146,14 +188,9 @@ public class Gui extends JFrame implements ActionListener {
 			dead = true;
 			return false;
 		}
-
-		for (int i = 0; i < this.HEIGHT; i++) {
-			for (int j = 0; j < this.WIDTH; j++) {
-				if (board[pY][pX] == 1) {
-					dead = true;
-					return false;
-				}
-			}
+		if (board[pY][pX] == 1 || board[pY][pX] == 7 || board[pY][pX] == 2) {
+				dead = true;
+				return false;
 		}
 
 		return true;
@@ -181,6 +218,8 @@ public class Gui extends JFrame implements ActionListener {
 							g.drawImage(tracks, j*10-4, i*10-3, this);
 						else if( board[i][j] == 11)
 							g.drawImage(carStop, j*10-8, i*10-5, this);
+						else if( board[i][j] == 7)
+							g.drawImage(wall, j*10-5, i*10-5, this);
 						
 					}
 				}
@@ -212,7 +251,7 @@ public class Gui extends JFrame implements ActionListener {
 		FontMetrics metr = this.getFontMetrics(small);
 		
 		g.setColor(new Color(244,244,244));
-		g.fillRect((WIDTH*10 - 130), 5, 130, 50);
+		g.fillRect((WIDTH*10 - 180), 5, 190, 50);
 		
 		g.setColor(Color.black);
 		g.setFont(small);
@@ -221,6 +260,12 @@ public class Gui extends JFrame implements ActionListener {
 		
 		
 		g.drawImage(gearbox, WIDTH*10 - gearbox.getWidth(this) - metr.stringWidth(msg)-20, 10, this);
+		
+		
+		Image currentDirection = direction;
+		
+		g.drawImage(currentDirection,WIDTH*10 -currentDirection.getWidth(this)- gearbox.getWidth(this) - metr.stringWidth(msg)-20, 10, this);
+		
 	}
 
 	private class TAdapter extends KeyAdapter {
@@ -275,6 +320,7 @@ public class Gui extends JFrame implements ActionListener {
 			if (key == KeyEvent.VK_SPACE){
 				if (!dead) {
 					move();
+					
 				}
 			}
 			if (key == KeyEvent.VK_F){

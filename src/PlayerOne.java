@@ -6,19 +6,16 @@ public class PlayerOne {
 	private int speed;
 	private int oldYCoord;
 	private int oldXCoord;
-	public static int LEFT = -1;
-	public static int RIGHT = 1;
-	public static int UP = -2;
-	public static int DOWN = 2;
-	public static int UPLEFT = -3;
-	public static int UPRIGHT = 3;
-	public static int DOWNLEFT = -4;
-	public static int DOWNRIGHT = 4;
-	
-	
+	public static final int LEFT = -1;
+	public static final int RIGHT = 1;
+	public static final int UP = -2;
+	public static final int DOWN = 2;
+	public static final int UPLEFT = -3;
+	public static final int UPRIGHT = 3;
+	public static final int DOWNLEFT = -4;
+	public static final int DOWNRIGHT = 4;
 
 	
-
 	public PlayerOne(int xCoord, int yCoord) {
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
@@ -38,7 +35,32 @@ public class PlayerOne {
 	}
 
 	public void setDirection(int direction) {
-		this.direction = direction;
+		switch (this.direction) {
+		case RIGHT :
+				this.direction = (direction == RIGHT ? DOWNRIGHT : UPRIGHT);
+				break;
+		case LEFT :
+			this.direction = (direction == RIGHT ? UPLEFT : DOWNLEFT);
+				break;
+		case DOWN :
+			this.direction = (direction == RIGHT ? DOWNLEFT : DOWNRIGHT);
+				break;
+		case UP :
+			this.direction = (direction == RIGHT ? UPRIGHT : UPLEFT);
+				break;
+		case UPLEFT :
+			this.direction = (direction == RIGHT ? UP : LEFT);
+				break;
+		case UPRIGHT :
+			this.direction = (direction == RIGHT ? RIGHT : UP);
+				break;
+		case DOWNLEFT :
+			this.direction = (direction == RIGHT ? LEFT : DOWN);
+				break;
+		case DOWNRIGHT :
+			this.direction = (direction == RIGHT ? DOWN : RIGHT);
+				break;
+		}
 	}
 
 	public int getyCoord() {
@@ -52,16 +74,6 @@ public class PlayerOne {
 			speed--;
 	}
 
-	public int[] getLastMove(){
-		
-		int[] move = new int[4];
-		move[0] = oldXCoord;
-		move[1] = oldYCoord;
-		move[2] = xCoord;
-		move[3] = yCoord;
-		
-		return move;
-	}
 
 
 	public void move(){
