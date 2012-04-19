@@ -86,6 +86,9 @@ public class Gui extends JFrame implements ActionListener {
 						board[playerOne.getOldYCoord()][playerOne.getOldXCoord()] = 11;
 						int minX = Math.min(playerOne.getxCoord(), playerOne.getOldXCoord());
 						int minY = Math.min(playerOne.getyCoord(), playerOne.getOldYCoord());
+						int maxX = Math.max(playerOne.getxCoord(), playerOne.getOldXCoord());
+						int maxY = Math.max(playerOne.getyCoord(), playerOne.getOldYCoord());
+						//TODO fixa svängarna med dx och dy i signs
 						
 						double dx = Math.abs(playerOne.getxCoord() - playerOne.getOldXCoord());
 						double dy = Math.abs(playerOne.getyCoord() - playerOne.getOldYCoord());
