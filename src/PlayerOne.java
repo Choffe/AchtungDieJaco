@@ -6,6 +6,8 @@ public class PlayerOne {
 	private int speed;
 	private int oldYCoord;
 	private int oldXCoord;
+	
+	
 	public static final int LEFT = -1;
 	public static final int RIGHT = 1;
 	public static final int UP = -2;
@@ -134,6 +136,48 @@ public class PlayerOne {
 
 	public int getOldXCoord() {
 		return oldXCoord;
+	}
+
+
+
+
+	public void calculateClosestMatch(int x, int y) {
+		oldXCoord = xCoord;
+		oldYCoord = yCoord;
+		
+		switch (direction) {
+		case 1 :
+				xCoord+=speed;
+				break;
+		case -1 :
+				xCoord-=speed;
+				break;
+		case 2 :
+				yCoord+=speed;
+				break;
+		case -2 :
+				yCoord-=speed;
+				break;
+		case -3 :
+				xCoord-=speed;
+				yCoord-=speed;
+				break;
+		case 3 :
+				xCoord+=speed;
+				yCoord-=speed;
+				break;
+				
+		case -4 :
+				xCoord-=speed;
+				yCoord+=speed;
+				break;
+		case 4 :
+				xCoord+=speed;
+				yCoord+=speed;
+				break;
+			
+		}
+		
 	}
 
 }

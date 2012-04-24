@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -44,6 +46,7 @@ public class Gui extends JFrame implements ActionListener {
 	public Gui() {
 		this.setBackground(Color.white);
 		addKeyListener(new TAdapter());
+		addMouseListener(new MyMouseListener());
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(1000, 700);
@@ -53,6 +56,8 @@ public class Gui extends JFrame implements ActionListener {
 
 		this.createBufferStrategy(2);
 
+		
+		
 		ImageIcon iid = new ImageIcon(this.getClass().getResource(
 				"car9.gif"));
 		car = iid.getImage();
@@ -122,7 +127,7 @@ public class Gui extends JFrame implements ActionListener {
 						board[playerOne.getOldYCoord()][playerOne.getOldXCoord()] = 11;
 						int minX = Math.min(playerOne.getxCoord(), playerOne.getOldXCoord());
 						int minY = Math.min(playerOne.getyCoord(), playerOne.getOldYCoord());
-						//TODO fixa svängarna med dx och dy i signs
+						//TODO fixa svï¿½ngarna med dx och dy i signs
 						
 						double dx = Math.abs(playerOne.getxCoord() - playerOne.getOldXCoord());
 						double dy = Math.abs(playerOne.getyCoord() - playerOne.getOldYCoord());
@@ -142,7 +147,7 @@ public class Gui extends JFrame implements ActionListener {
 							kX = 1;
 							kY = 1;
 						}
-						//FIXME WARNING!!!! FARLIGT FÖR PÅ BYGGNAD MIN BLIR MAX!!! HACK!!  
+						//FIXME WARNING!!!! FARLIGT Fï¿½R Pï¿½ BYGGNAD MIN BLIR MAX!!! HACK!!  
 						else  {
 							minY = Math.max(playerOne.getyCoord(), playerOne.getOldYCoord());;
 							kX = 1;
@@ -267,6 +272,41 @@ public class Gui extends JFrame implements ActionListener {
 		g.drawImage(currentDirection,WIDTH*10 -currentDirection.getWidth(this)- gearbox.getWidth(this) - metr.stringWidth(msg)-20, 10, this);
 		
 	}
+	
+	private class MyMouseListener implements MouseListener {
+      
+  
+
+    public void mousePressed(MouseEvent e) {
+       saySomething("Mouse pressed; # of clicks: "
+                    + e.getClickCount(), e);
+    }
+
+    public void mouseReleased(MouseEvent e) {
+       saySomething("Mouse released; # of clicks: "
+                    + e.getClickCount(), e);
+    }
+
+    public void mouseEntered(MouseEvent e) {
+       saySomething("Mouse entered", e);
+    }
+
+    public void mouseExited(MouseEvent e) {
+       saySomething("Mouse exited", e);
+    }
+
+    public void mouseClicked(MouseEvent e) {
+       saySomething("Mouse clicked (# of clicks: "
+                    + e.getClickCount() + ") X : " + e.getX() + " Y: " + e.getY(), e);
+    }
+
+    void saySomething(String eventDescription, MouseEvent e) {
+        System.out.println(eventDescription + " detected on "
+                        + e.getComponent().getClass().getName()
+                        + ".");
+    }
+}
+
 
 	private class TAdapter extends KeyAdapter {
 
