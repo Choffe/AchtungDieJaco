@@ -285,9 +285,12 @@ public class Gui extends JFrame implements ActionListener {
     public void mouseReleased(MouseEvent e) {
        saySomething("Mouse released; # of clicks: "
                     + e.getClickCount(), e);
+       	playerOne.calculateClosestMatch(e.getX(), e.getY());
     }
 
-    public void mouseEntered(MouseEvent e) {
+
+
+	public void mouseEntered(MouseEvent e) {
        saySomething("Mouse entered", e);
     }
 
